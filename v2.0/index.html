@@ -1,1 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유통사 전용몰 구축 최종 기획안 (v2.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .task-list-item {
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .task-list-item i {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">유통사 전용몰 구축 최종 기획안</h1>
+            <p class="text-xl text-indigo-600 font-semibold mt-1">(v2.0)</p>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">사용자 유형과 접속 주소에 따라 개인화된 UI(상품, 로고, 메뉴)를 제공하는 **동적 UI 시스템** 구축을 위한 최종 통합 기획안입니다.</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="space-y-8">
+
+            <!-- Section 1: Executive Summary -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="book-marked"></i>
+                    1. 기획 요약 (Executive Summary)
+                </h2>
+                <div class="mt-4 space-y-3 text-gray-700">
+                    <p><strong>프로젝트 목표:</strong> 각 유통사에게 고유 서브도메인(`[유통사코드].orderz.kr`)을 자동으로 제공하고, 접속자에 따라 맞춤형 UI를 노출하여 독립적인 전용몰 경험을 제공합니다.</p>
+                    <div>
+                        <strong class="block">핵심 기능:</strong>
+                        <ul class="list-disc list-inside ml-4 mt-1">
+                            <li>**동적 상품 노출:** 접속한 URL과 로그인한 사용자 정보에 따라 각기 다른 상품 목록을 보여줍니다.</li>
+                            <li>**UI 브랜딩:** 유통사별 전용 로고와 GNB 메뉴를 설정하고 노출합니다.</li>
+                        </ul>
+                    </div>
+                    <p><strong>개발 전략:</strong> 가장 핵심적인 **'동적 상품 노출' 기능을 MVP(Minimum Viable Product)로 우선 개발**한 후, UI 브랜딩 기능을 점진적으로 확장합니다.</p>
+                </div>
+            </section>
+
+            <!-- Section 2: Phase 1 MVP -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                 <h2 class="text-2xl font-bold text-indigo-700 flex items-center gap-2">
+                    <i data-lucide="rocket"></i>
+                    2. Phase 1: MVP 개발 - 동적 상품 노출
+                </h2>
+                <p class="mt-2 text-gray-600">시스템의 기반을 다지고, 가장 핵심적인 '상황에 맞는 상품 노출' 기능을 구현하여 빠르게 가치를 검증합니다.</p>
+                
+                <div class="mt-6 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3">STEP 1: 인프라 설정 (Infra Setup)</h3>
+                        <div class="mt-2 text-gray-700">
+                             <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>와일드카드 DNS 설정:</strong> 도메인 관리 시스템에서 `*.orderz.kr` 레코드가 서버 IP를 가리키도록 설정합니다.</span>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3">STEP 2: 백엔드 개발 (Back-end)</h3>
+                         <div class="mt-2 text-gray-700">
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>DB 스키마 확장:</strong>
+                                    <ul class="list-disc list-inside ml-6 mt-1 text-sm">
+                                        <li>`Products` 테이블: **'유통사 코드'** 컬럼 추가 (공용 상품은 null)</li>
+                                        <li>`Users` 테이블: **'유통사 코드'** 컬럼 추가 (소속 없는 회원은 null)</li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>맞춤형 상품 API 개발:</strong> 아래 프로세스 흐름도에 따라 상품 목록을 결정하는 API를 구현합니다.</span>
+                            </div>
+                         </div>
+                        <div class="mt-4 bg-gray-50 p-4 rounded-lg border">
+                            <h4 class="font-semibold text-center text-gray-700 mb-2">프로세스 흐름도</h4>
+                            <pre class="text-sm text-gray-600 text-center leading-relaxed font-mono whitespace-pre-wrap">[사용자 접속 요청]
+       ▼
+[1. 접속 URL에서 '유통사 코드' 확인]
+       ▼
+[2. 로그인 여부 및 '소속 유통사' 확인]
+       ▼
+[3. 최종 '상품 기준' 결정 (규칙: 고객 소속 > 접속 URL)]
+       ▼
+[4. 기준에 따라 '전용/공용 상품' 조합하여 API 응답]</pre>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="text-lg font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3">STEP 3: 프론트엔드 개발 (Front-end)</h3>
+                         <div class="mt-2 text-gray-700">
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>상품 목록 API 호출 로직 구현</strong></span>
+                            </div>
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>API 응답 데이터를 화면에 표시하는 UI 컴포넌트 개발</strong></span>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Phase 2 -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                 <h2 class="text-2xl font-bold text-teal-700 flex items-center gap-2">
+                    <i data-lucide="gem"></i>
+                    3. Phase 2: 기능 확장 - UI 개인화
+                </h2>
+                <p class="mt-2 text-gray-600">MVP 기능 위에 로고, GNB 메뉴 등 UI 브랜딩 기능을 추가하여 완전한 '전용몰' 경험을 제공합니다.</p>
+                
+                <div class="mt-6 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 border-l-4 border-teal-500 pl-3">STEP 1: 관리자 기능 개발 (Admin)</h3>
+                        <div class="mt-2 text-gray-700">
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>로고 관리:</strong> 유통사가 전용 로고 이미지를 업로드하는 기능 구현</span>
+                            </div>
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span><strong>GNB 관리:</strong> 유통사가 GNB 메뉴의 '명칭'과 '링크'를 설정하는 기능 구현</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 border-l-4 border-teal-500 pl-3">STEP 2: 동적 UI 적용 (Back-end & Front-end)</h3>
+                        <div class="mt-2 text-gray-700">
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span>상품 API 응답에 `logoUrl`, `gnbInfo` 등 추가 데이터를 포함하도록 백엔드 수정</span>
+                            </div>
+                            <div class="task-list-item">
+                                <i data-lucide="square" class="text-gray-400 w-4 h-4 flex-shrink-0"></i>
+                                <span>프론트엔드에서 API 데이터를 받아 헤더의 로고와 GNB를 동적으로 변경</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 4: Scenarios -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="users"></i>
+                    4. 주요 사용 시나리오 및 결과
+                </h2>
+                <p class="mt-2 text-gray-600">Phase 2까지 완료되었을 때, 각 조건에 따라 사용자에게 보여질 최종 UI 결과 예시입니다.</p>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-3 font-semibold text-sm text-gray-600 border border-gray-200">사용자 유형</th>
+                                <th class="p-3 font-semibold text-sm text-gray-600 border border-gray-200">접속 주소</th>
+                                <th class="p-3 font-semibold text-sm text-gray-600 border border-gray-200">최종 UI 결과</th>
+                                <th class="p-3 font-semibold text-sm text-gray-600 border border-gray-200">판단 규칙</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">비로그인</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><code>orderz.kr</code></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">[본사 로고] [고객센터 GNB] [공용 상품]</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">기본값 표시</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">비로그인</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><code>A-MART.orderz.kr</code></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><strong class="text-blue-600">[A-MART 로고] [A-MART GNB] [A-MART + 공용]</strong></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">URL 기준 (전용몰 전체 UI)</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">A-MART 회원</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><code>orderz.kr</code></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><strong class="text-blue-600">[A-MART 로고] [A-MART GNB] [A-MART + 공용]</strong></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">사용자 소속 우선</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">A-MART 회원</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><code>B-SHOP.orderz.kr</code></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><strong class="text-blue-600">[A-MART 로고] [A-MART GNB] [A-MART + 공용]</strong></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">사용자 소속 우선</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">A-MART 관리자</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">어디든 접속</td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200"><strong class="text-blue-600">[A-MART 로고]</strong> <strong class="text-red-600">[관리자단 GNB]</strong> <strong class="text-blue-600">[A-MART + 공용]</strong></td>
+                                <td class="p-3 text-sm text-gray-700 border border-gray-200">사용자 소속 + 관리자 규칙</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Section 5: Roadmap -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="telescope"></i>
+                    5. 장기 로드맵 (Long-term Roadmap)
+                </h2>
+                <div class="mt-4 grid md:grid-cols-2 gap-6 text-gray-700">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-gray-800">커스텀 도메인 도입</h3>
+                        <p class="mt-1 text-sm">유료 고객에게 `https://[자체도메인].kr`을 연결해주는 기능을 제공하여 완전한 독립몰 경험을 선사합니다. (CNAME 레코드 활용)</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-gray-800">모바일 앱 확장</h3>
+                        <p class="mt-1 text-sm">'Orderz' 대표 앱 하나를 출시하되, **딥링크(Deep Link)** 기술을 활용하여 유통사별 맞춤형 앱 경험을 제공합니다.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
 
